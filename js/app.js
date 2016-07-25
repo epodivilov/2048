@@ -27,5 +27,19 @@ const Game = (() => {
         this.tailList = new Array(16);
     }
 
+    NewGame.prototype.randomTail = function () {
+        let randomPos = Math.floor(Math.random() * this.tailList.length);
+
+        while (this.tailList[randomPos] !== undefined) {
+            randomPos = Math.floor(Math.random() * this.tailList.length);
+        }
+
+        this.tailList[randomPos] = new Tail({
+            value: Math.random() * 10 > 9 ? 4 : 2,
+            position: randomPos
+        })
+        playfield.appendChild(this.tailList[randomPos].element)
+    }
+
     return NewGame;
 })()

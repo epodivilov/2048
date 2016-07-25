@@ -13,3 +13,19 @@ Tail.prototype.render = function () {
     this.element.className = 'fade thing t' + this.value;
     return this.element;
 }
+
+const Game = (() => {
+    var bestScore = 0,
+        gameScore = 0,
+        NewGame
+
+    var playfield = document.getElementById('playfield'),
+        currentScoreEl = document.getElementById('currentscore'),
+        bestScoreEl = document.getElementById('bestscore');
+
+    NewGame = function () {
+        this.tailList = new Array(16);
+    }
+
+    return NewGame;
+})()

@@ -197,5 +197,15 @@ const Game = (() => {
         this.render();
     }
 
+    NewGame.prototype.render = function () {
+        bestScore = gameScore > bestScore ? gameScore : bestScore;
+        currentScoreEl.textContent = gameScore;
+        bestScoreEl.textContent = bestScore;
+
+        this.tailList.filter(Boolean).forEach((tail) => {
+            tail.render()
+        })
+    }
+
     return NewGame;
 })()

@@ -244,3 +244,38 @@ Mouse.prototype.onMouseUp = function (event) {
 }
 
 
+window.onload = function () {
+    var resetBtn = document.getElementById('reset');
+    var playfield = document.getElementById('playfield');
+
+    var game = new Game(),
+        mouse = new Mouse();
+
+    game.reset();
+
+    document.addEventListener('keydown', (e) => {
+        switch (e.which) {
+            case 37: game.moveTails('left');  break;
+            case 38: game.moveTails('up');    break;
+            case 39: game.moveTails('right'); break;
+            case 40: game.moveTails('down');  break;
+            default: return;
+        }
+
+        game.render();
+    })
+
+    playfield.addEventListener('mousedown', (e) => {
+        mouse.onMouseDown(e)
+    })
+
+    playfield.addEventListener('mouseup', (e) => {
+        mouse.onMouseUp(e)
+        game.moveTails(mouse.getDirection());
+        game.render();
+    })
+
+    resetBtn.addEventListener('click', (e) => {
+        game.reset()
+    })
+}

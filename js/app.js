@@ -209,3 +209,38 @@ const Game = (() => {
 
     return NewGame;
 })()
+
+function Mouse() {
+    this.downX = 0;
+    this.downY = 0;
+    this.upX = 0;
+    this.upY = 0;
+}
+Mouse.prototype.getDirection = function () {
+    var direction = '';
+
+    if (this.upX < this.downX && Math.abs(this.upX - this.downX) > Math.abs(this.upY - this.downY)) {
+        direction = 'left'
+    }
+    if (this.upX > this.downX && Math.abs(this.upX - this.downX) > Math.abs(this.upY - this.downY)) {
+        direction = 'right'
+    }
+    if (this.upY < this.downY && Math.abs(this.upX - this.downX) < Math.abs(this.upY - this.downY)) {
+        direction = 'up'
+    }
+    if (this.upY > this.downY && Math.abs(this.upX - this.downX) < Math.abs(this.upY - this.downY)) {
+        direction = 'down'
+    }
+
+    return direction;
+}
+Mouse.prototype.onMouseDown = function (event) {
+    this.downX = event.pageX;
+    this.downY = event.pageY;
+}
+Mouse.prototype.onMouseUp = function (event) {
+    this.upX = event.pageX;
+    this.upY = event.pageY;
+}
+
+

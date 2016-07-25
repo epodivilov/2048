@@ -187,5 +187,15 @@ const Game = (() => {
         if (isMoved) this.randomTail();
     }
 
+    NewGame.prototype.reset = function () {
+        this.tailList.filter(Boolean).forEach((tail) => {
+            this.removeTail(tail);
+        })
+
+        gameScore = 0;
+        this.randomTail();
+        this.render();
+    }
+
     return NewGame;
 })()

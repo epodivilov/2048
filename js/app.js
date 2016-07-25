@@ -41,5 +41,10 @@ const Game = (() => {
         playfield.appendChild(this.tailList[randomPos].element)
     }
 
+    NewGame.prototype.removeTail = function (tail) {
+        this.tailList[tail.position] = undefined;
+        playfield.removeChild(tail.element);
+    }
+
     return NewGame;
 })()

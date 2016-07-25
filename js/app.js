@@ -46,5 +46,62 @@ const Game = (() => {
         playfield.removeChild(tail.element);
     }
 
+    NewGame.prototype.__moveLeft = function (tail) {
+        if (!tail || tail.position < 4) return;
+
+        let newPos = tail.position,
+            reward = 0;
+
+        do {
+            newPos = newPos - 4;
+        } while (this.tailList[newPos] === undefined && newPos > 3)
+
+        if (this.tailList[newPos] === undefined) {
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos].value === tail.value) {
+            tail.value *= 2;
+            reward = tail.value;
+            this.removeTail(this.tailList[newPos]);
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos+4] === undefined) {
+            newPos = newPos + 4;
+            this.tailList[newPos] = tail;
+        } else {
+            return;
+        }
+
+        this.tailList[tail.position] = undefined;
+        tail.move(newPos);
+        return reward;
+    }
+    NewGame.prototype.__moveRight = function (tail) {
+        if (!tail || tail.position > 11) return;
+
+        let newPos = tail.position,
+            reward = 0;
+
+        do {
+            newPos = newPos + 4;
+        } while (this.tailList[newPos] === undefined && newPos < 12)
+
+        if (this.tailList[newPos] === undefined) {
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos].value === tail.value) {
+            tail.value *= 2;
+            reward = tail.value;
+            this.removeTail(this.tailList[newPos]);
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos-4] === undefined) {
+            newPos = newPos - 4;
+            this.tailList[newPos] = tail;
+        } else {
+            return;
+        }
+
+        this.tailList[tail.position] = undefined;
+        tail.move(newPos);
+        return reward;
+    }
+
     return NewGame;
 })()

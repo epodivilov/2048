@@ -158,6 +158,34 @@ const Game = (() => {
         tail.move(newPos);
         return reward;
     }
+    NewGame.prototype.moveTails = function (direction) {
+        let score = 0;
+        let isMoved = false;
+        for (let i = 0, len = this.tailList.length; i < len; i++) {
+            switch (direction) {
+                case 'left':
+                    score = this.__moveLeft(this.tailList[i]);
+                    break;
+                case 'right':
+                    score = this.__moveRight(this.tailList[len-1-i]);
+                    break;
+                case 'up':
+                    score = this.__moveUp(this.tailList[i]);
+                    break;
+                case 'down':
+                    score = this.__moveDown(this.tailList[len-1-i]);
+                    break;
+                default: return;
+            }
+
+            if (!isNaN(score)) {
+                gameScore += score;
+                isMoved = true;
+            }
+        }
+
+        if (isMoved) this.randomTail();
+    }
 
     return NewGame;
 })()

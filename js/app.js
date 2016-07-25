@@ -102,6 +102,62 @@ const Game = (() => {
         tail.move(newPos);
         return reward;
     }
+    NewGame.prototype.__moveUp = function (tail) {
+        if (!tail || tail.position % 4 === 0) return;
+
+        let newPos = tail.position,
+            reward = 0;
+
+        do {
+            newPos = newPos - 1;
+        } while (this.tailList[newPos] === undefined && (newPos) % 4 !== 0)
+
+        if (this.tailList[newPos] === undefined) {
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos].value === tail.value) {
+            tail.value *= 2;
+            reward = tail.value;
+            this.removeTail(this.tailList[newPos]);
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos+1] === undefined) {
+            newPos = newPos+1;
+            this.tailList[newPos] = tail;
+        } else {
+            return;
+        }
+
+        this.tailList[tail.position] = undefined;
+        tail.move(newPos);
+        return reward;
+    }
+    NewGame.prototype.__moveDown = function (tail) {
+        if (!tail || [3,7,11,15].indexOf(tail.position) !== -1 ) return;
+
+        let newPos = tail.position,
+            reward = 0;
+
+        do {
+            newPos = newPos + 1;
+        } while (this.tailList[newPos] === undefined && [3,7,11,15].indexOf(newPos) === -1)
+
+        if (this.tailList[newPos] === undefined) {
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos].value === tail.value) {
+            tail.value *= 2;
+            reward = tail.value;
+            this.removeTail(this.tailList[newPos]);
+            this.tailList[newPos] = tail;
+        } else if (this.tailList[newPos-1] === undefined) {
+            newPos = newPos-1;
+            this.tailList[newPos] = tail;
+        } else {
+            return;
+        }
+
+        this.tailList[tail.position] = undefined;
+        tail.move(newPos);
+        return reward;
+    }
 
     return NewGame;
 })()

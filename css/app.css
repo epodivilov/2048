@@ -168,3 +168,21 @@ div.fade {
 .thing.t2048:after{
     content: '2048'
 }
+
+@media screen and (max-device-width: 360px) {
+    .topbar {
+        display: flex;
+        justify-content: space-around;
+        margin-left: 25px;
+        width: 400px;
+    }
+    #playfield{
+        position: absolute;
+        top: 100px;
+        left: 25px;
+        width: 400px;
+        height: 400px;
+        background: white;
+    }
+}
+

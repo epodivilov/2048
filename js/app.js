@@ -20,7 +20,7 @@ Tile.prototype.render = function () {
     return this.element;
 }
 
-const Game = (() => {
+var Game = (function () {
     var bestScore = localStorage.getItem('bestScore') || 0,
         gameScore = 0,
         NewGame

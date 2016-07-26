@@ -192,12 +192,10 @@ div.fade {
         width: 400px;
     }
     #playfield{
-        position: absolute;
-        top: 100px;
         left: 25px;
-        width: 400px;
-        height: 400px;
-        background: white;
+    }
+    #gameover {
+        left: 25px;
     }
 }
 

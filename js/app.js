@@ -1,14 +1,18 @@
 function Tile(options) {
     this.element = document.createElement('div')
     this.value = options.value;
-    this.position = options.position;
+    this.position = {
+        x: options.position.x,
+        y: options.position.y
+    }
 }
 Tile.prototype.move = function (newPosition) {
-    this.position = newPosition;
+    this.position.x = newPosition.x;
+    this.position.y = newPosition.y;
 };
 Tile.prototype.render = function () {
-    var top = (this.position % 4) * 100,
-        left = (this.position / 4 |0) * 100
+    var top = this.position.y * 100,
+        left = this.position.x * 100
     this.element.style.cssText = 'top: ' + top + 'px; left: ' + left + 'px;';
     this.element.className = 'fade thing t' + this.value;
     return this.element;
@@ -24,173 +28,197 @@ const Game = (() => {
         bestScoreEl = document.getElementById('bestscore');
 
     NewGame = function () {
-        this.tailList = new Array(16);
+        this.tailList = [
+            new Array(4),
+            new Array(4),
+            new Array(4),
+            new Array(4)
+        ]
     }
 
     NewGame.prototype.randomTail = function () {
-        var randomPos = Math.floor(Math.random() * this.tailList.length);
+        var randomPos = {
+            x: Math.floor(Math.random() * 4),
+            y: Math.floor(Math.random() * 4)
+        };
 
-        while (this.tailList[randomPos] !== undefined) {
-            randomPos = Math.floor(Math.random() * this.tailList.length);
+        while (this.tailList[randomPos.x][randomPos.y] !== undefined) {
+            randomPos = {
+                x: Math.floor(Math.random() * 4),
+                y: Math.floor(Math.random() * 4)
+            };
         }
 
-        this.tailList[randomPos] = new Tile({
+        this.tailList[randomPos.x][randomPos.y] = new Tile({
             value: Math.random() * 10 > 9 ? 4 : 2,
             position: randomPos
         })
-        playfield.appendChild(this.tailList[randomPos].element)
+        playfield.appendChild(this.tailList[randomPos.x][randomPos.y].element)
     }
 
     NewGame.prototype.removeTail = function (tile) {
-        this.tailList[tile.position] = undefined;
+        this.tailList[tile.position.x][tile.position.y] = undefined;
         playfield.removeChild(tile.element);
     }
 
-    NewGame.prototype.__moveLeft = function (tile) {
-        if (!tile || tile.position < 4) return;
+    NewGame.prototype.moveAndJoin = function (tile, position) {
+        tile.value *= 2;
+        this.removeTail(this.tailList[position.x][position.y]);
+        this.tailList[position.x][position.y] = tile;
+        return tile.value;
+    }
 
-        var newPos = tile.position,
+    NewGame.prototype.__moveLeft = function (tile) {
+        if (!tile || tile.position.x === 0) return;
+
+        var newPos = {
+                x: tile.position.x,
+                y: tile.position.y
+            },
             reward = 0;
 
         do {
-            newPos = newPos - 4;
-        } while (this.tailList[newPos] === undefined && newPos > 3)
+            newPos.x -= 1;
+        } while (this.tailList[newPos.x][newPos.y] === undefined && newPos.x > 0)
 
-        if (this.tailList[newPos] === undefined) {
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos].value === tile.value) {
-            tile.value *= 2;
-            reward = tile.value;
-            this.removeTail(this.tailList[newPos]);
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos+4] === undefined) {
-            newPos = newPos + 4;
-            this.tailList[newPos] = tile;
+        if (this.tailList[newPos.x][newPos.y] === undefined) {
+            this.tailList[newPos.x][newPos.y] = tile;
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+            reward = this.moveAndJoin(tile, newPos)
+        } else if (this.tailList[newPos.x+1][newPos.y] === undefined) {
+            this.tailList[++newPos.x][newPos.y] = tile;
         } else {
             return;
         }
 
-        this.tailList[tile.position] = undefined;
+        this.tailList[tile.position.x][tile.position.y] = undefined;
         tile.move(newPos);
+
         return reward;
     }
     NewGame.prototype.__moveRight = function (tile) {
-        if (!tile || tile.position > 11) return;
+        if (!tile || tile.position.x === 3) return;
 
-        let newPos = tile.position,
+        var newPos = {
+                x: tile.position.x,
+                y: tile.position.y
+            },
             reward = 0;
 
         do {
-            newPos = newPos + 4;
-        } while (this.tailList[newPos] === undefined && newPos < 12)
+            newPos.x += 1;
+        } while (this.tailList[newPos.x][newPos.y] === undefined && newPos.x < 3)
 
-        if (this.tailList[newPos] === undefined) {
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos].value === tile.value) {
-            tile.value *= 2;
-            reward = tile.value;
-            this.removeTail(this.tailList[newPos]);
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos-4] === undefined) {
-            newPos = newPos - 4;
-            this.tailList[newPos] = tile;
+        if (this.tailList[newPos.x][newPos.y] === undefined) {
+            this.tailList[newPos.x][newPos.y] = tile;
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+            reward = this.moveAndJoin(tile, newPos)
+        } else if (this.tailList[newPos.x-1][newPos.y] === undefined) {
+            this.tailList[--newPos.x][newPos.y] = tile;
         } else {
             return;
         }
 
-        this.tailList[tile.position] = undefined;
+        this.tailList[tile.position.x][tile.position.y] = undefined;
         tile.move(newPos);
+
         return reward;
     }
     NewGame.prototype.__moveUp = function (tile) {
-        if (!tile || tile.position % 4 === 0) return;
+        if (!tile || tile.position.y === 0) return;
 
-        var newPos = tile.position,
+        var newPos = {
+                x: tile.position.x,
+                y: tile.position.y
+            },
             reward = 0;
 
         do {
-            newPos = newPos - 1;
-        } while (this.tailList[newPos] === undefined && (newPos) % 4 !== 0)
+            newPos.y -= 1;
+        } while (this.tailList[newPos.x][newPos.y] === undefined && newPos.y > 0)
 
-        if (this.tailList[newPos] === undefined) {
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos].value === tile.value) {
-            tile.value *= 2;
-            reward = tile.value;
-            this.removeTail(this.tailList[newPos]);
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos+1] === undefined) {
-            newPos = newPos+1;
-            this.tailList[newPos] = tile;
+        if (this.tailList[newPos.x][newPos.y] === undefined) {
+            this.tailList[newPos.x][newPos.y] = tile;
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+            reward = this.moveAndJoin(tile, newPos)
+        } else if (this.tailList[newPos.x][newPos.y+1] === undefined) {
+            this.tailList[newPos.x][++newPos.y] = tile;
         } else {
             return;
         }
 
-        this.tailList[tile.position] = undefined;
+        this.tailList[tile.position.x][tile.position.y] = undefined;
         tile.move(newPos);
+
         return reward;
     }
     NewGame.prototype.__moveDown = function (tile) {
-        if (!tile || [3,7,11,15].indexOf(tile.position) !== -1 ) return;
+        if (!tile || tile.position.y === 3) return;
 
-        var newPos = tile.position,
+        var newPos = {
+                x: tile.position.x,
+                y: tile.position.y
+            },
             reward = 0;
 
         do {
-            newPos = newPos + 1;
-        } while (this.tailList[newPos] === undefined && [3,7,11,15].indexOf(newPos) === -1)
+            newPos.y += 1;
+        } while (this.tailList[newPos.x][newPos.y] === undefined && newPos.y < 3)
 
-        if (this.tailList[newPos] === undefined) {
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos].value === tile.value) {
-            tile.value *= 2;
-            reward = tile.value;
-            this.removeTail(this.tailList[newPos]);
-            this.tailList[newPos] = tile;
-        } else if (this.tailList[newPos-1] === undefined) {
-            newPos = newPos-1;
-            this.tailList[newPos] = tile;
+        if (this.tailList[newPos.x][newPos.y] === undefined) {
+            this.tailList[newPos.x][newPos.y] = tile;
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+            reward = this.moveAndJoin(tile, newPos)
+        } else if (this.tailList[newPos.x][newPos.y-1] === undefined) {
+            this.tailList[newPos.x][--newPos.y] = tile;
         } else {
             return;
         }
 
-        this.tailList[tile.position] = undefined;
+        this.tailList[tile.position.x][tile.position.y] = undefined;
         tile.move(newPos);
+
         return reward;
     }
     NewGame.prototype.moveTails = function (direction) {
-        let score = 0;
-        let isMoved = false;
-        for (let i = 0, len = this.tailList.length; i < len; i++) {
-            switch (direction) {
-                case 'left':
-                    score = this.__moveLeft(this.tailList[i]);
-                    break;
-                case 'right':
-                    score = this.__moveRight(this.tailList[len-1-i]);
-                    break;
-                case 'up':
-                    score = this.__moveUp(this.tailList[i]);
-                    break;
-                case 'down':
-                    score = this.__moveDown(this.tailList[len-1-i]);
-                    break;
-                default: return;
-            }
+        var score = 0;
+        var isMoved = false;
 
-            if (!isNaN(score)) {
-                gameScore += score;
-                isMoved = true;
+        for (var column = 0; column < 4; column++) {
+            for (var row = 0; row < 4; row++) {
+                switch (direction) {
+                    case 'left':
+                        score = this.__moveLeft(this.tailList[column][row]);
+                        break;
+                    case 'right':
+                        score = this.__moveRight(this.tailList[column][row]);
+                        break;
+                    case 'up':
+                        score = this.__moveUp(this.tailList[column][row]);
+                        break;
+                    case 'down':
+                        score = this.__moveDown(this.tailList[column][row]);
+                        break;
+                    default: return;
+                }
+
+                if (!isNaN(score)) {
+                    gameScore += score;
+                    isMoved = true;
+                }
             }
         }
 
         if (isMoved) this.randomTail();
+
     }
 
     NewGame.prototype.reset = function () {
         var self = this;
-        this.tailList.filter(Boolean).forEach(function(tile) {
-            self.removeTail(tile);
+        this.tailList.filter(Boolean).forEach(function(column) {
+            column.filter(Boolean).forEach(function (tile) {
+                self.removeTail(tile);
+            })
         })
 
         gameScore = 0;
@@ -203,8 +231,12 @@ const Game = (() => {
         currentScoreEl.textContent = gameScore;
         bestScoreEl.textContent = bestScore;
 
-        this.tailList.filter(Boolean).forEach(function(tile) {
-            tile.render()
+        console.log(this.tailList);
+        this.tailList.filter(Boolean).forEach(function(column) {
+            console.log(column);
+            column.filter(Boolean).forEach(function (tile) {
+                tile.render()
+            })
         })
     }
 
@@ -271,8 +303,8 @@ window.onload = function () {
     })
 
     playfield.addEventListener('touchstart', function (e) {
-        console.log(e);
-        mouse.onMouseDown(e)
+        var touchEvent = e.touches[0];
+        mouse.onMouseDown(touchEvent);
     })
 
     playfield.addEventListener('mouseup', function (e) {
@@ -282,8 +314,8 @@ window.onload = function () {
     })
 
     playfield.addEventListener('touchend', function (e) {
-        console.log(e);
-        mouse.onMouseUp(e)
+        var touchEvent = e.changedTouches[0];
+        mouse.onMouseUp(touchEvent)
         game.moveTails(mouse.getDirection());
         game.render();
     })

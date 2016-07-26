@@ -87,7 +87,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
+        } else if (!this.tailList[newPos.x][newPos.y].isJoined && this.tailList[newPos.x][newPos.y].value === tile.value) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x+1][newPos.y] === undefined) {
             this.tailList[++newPos.x][newPos.y] = tile;
@@ -115,7 +115,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
+        } else if (!this.tailList[newPos.x][newPos.y].isJoined && this.tailList[newPos.x][newPos.y].value === tile.value) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x-1][newPos.y] === undefined) {
             this.tailList[--newPos.x][newPos.y] = tile;
@@ -143,7 +143,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
+        } else if (!this.tailList[newPos.x][newPos.y].isJoined && this.tailList[newPos.x][newPos.y].value === tile.value) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x][newPos.y+1] === undefined) {
             this.tailList[newPos.x][++newPos.y] = tile;
@@ -171,7 +171,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
+        } else if (!this.tailList[newPos.x][newPos.y].isJoined && this.tailList[newPos.x][newPos.y].value === tile.value) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x][newPos.y-1] === undefined) {
             this.tailList[newPos.x][--newPos.y] = tile;

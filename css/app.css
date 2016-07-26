@@ -48,8 +48,8 @@
 
 
 div.fade {
-    -webkit-animation: fade 0.5s ease-out;
-    animation: fade 0.5s ease-out;
+    -webkit-animation: fade 1s ease-out;
+    animation: fade 1s ease-out;
     opacity: 1;
 }
 @-webkit-keyframes fade {

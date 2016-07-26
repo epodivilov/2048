@@ -39,7 +39,7 @@ var Game = (function () {
         ]
     };
 
-    NewGame.prototype.randomTile = function () {
+    NewGame.prototype.__randomTile = function () {
         var randomPos = {
             x: Math.floor(Math.random() * 4),
             y: Math.floor(Math.random() * 4)
@@ -59,49 +59,24 @@ var Game = (function () {
         playfield.appendChild(this.tileList[randomPos.x][randomPos.y].element)
     };
 
-    NewGame.prototype.removeTile = function (tile) {
+    NewGame.prototype.__removeTile = function (tile) {
         this.tileList[tile.position.x][tile.position.y] = undefined;
         playfield.removeChild(tile.element);
     };
-
-    NewGame.prototype.moveAndJoin = function (tile, position) {
+    NewGame.prototype.__moveAndJoin = function (tile, position) {
         tile.value *= 2;
         tile.isJoined = true;
-        this.removeTile(this.tileList[position.x][position.y]);
+        this.__removeTile(this.tileList[position.x][position.y]);
         this.tileList[position.x][position.y] = tile;
         return tile.value;
     };
+    NewGame.prototype.__moveTile = function (tile, dx, dy) {
+        if (!tile) return -1;
+        if (dx < 0 && tile.position.x === 0) return -1;
+        if (dx > 0 && tile.position.x === 3) return -1;
+        if (dy < 0 && tile.position.y === 0) return -1;
+        if (dy > 0 && tile.position.y === 3) return -1;
 
-    NewGame.prototype.__moveLeft = function (tile) {
-        if (!tile || tile.position.x === 0) return;
-
-        var newPos = {
-                x: tile.position.x,
-                y: tile.position.y
-            },
-            reward = 0;
-
-        do {
-            newPos.x -= 1;
-        } while (this.tileList[newPos.x][newPos.y] === undefined && newPos.x > 0)
-
-        if (this.tileList[newPos.x][newPos.y] === undefined) {
-            this.tileList[newPos.x][newPos.y] = tile;
-        } else if (!this.tileList[newPos.x][newPos.y].isJoined && this.tileList[newPos.x][newPos.y].value === tile.value) {
-            reward = this.moveAndJoin(tile, newPos)
-        } else if (this.tileList[newPos.x+1][newPos.y] === undefined) {
-            this.tileList[++newPos.x][newPos.y] = tile;
-        } else {
-            return;
-        }
-
-        this.tileList[tile.position.x][tile.position.y] = undefined;
-        tile.move(newPos);
-
-        return reward;
-    };
-    NewGame.prototype.__moveRight = function (tile) {
-        if (!tile || tile.position.x === 3) return;
 
         var newPos = {
                 x: tile.position.x,
@@ -110,79 +85,31 @@ var Game = (function () {
             reward = 0;
 
         do {
-            newPos.x += 1;
-        } while (this.tileList[newPos.x][newPos.y] === undefined && newPos.x < 3)
+            if (dx < 0 && newPos.x === 0) break;
+            if (dx > 0 && newPos.x === 3) break;
+            if (dy < 0 && newPos.y === 0) break;
+            if (dy > 0 && newPos.y === 3) break;
+            newPos.x = newPos.x + dx;
+            newPos.y = newPos.y + dy;
+        } while (this.tileList[newPos.x][newPos.y] === undefined);
 
         if (this.tileList[newPos.x][newPos.y] === undefined) {
             this.tileList[newPos.x][newPos.y] = tile;
         } else if (!this.tileList[newPos.x][newPos.y].isJoined && this.tileList[newPos.x][newPos.y].value === tile.value) {
-            reward = this.moveAndJoin(tile, newPos)
-        } else if (this.tileList[newPos.x-1][newPos.y] === undefined) {
-            this.tileList[--newPos.x][newPos.y] = tile;
+            reward = this.__moveAndJoin(tile, newPos)
+        } else if (this.tileList[newPos.x - dx][newPos.y - dy] === undefined) {
+            newPos.x = newPos.x - dx;
+            newPos.y = newPos.y - dy;
+            this.tileList[newPos.x][newPos.y] = tile;
         } else {
-            return;
+            return -1;
         }
 
         this.tileList[tile.position.x][tile.position.y] = undefined;
         tile.move(newPos);
 
         return reward;
-    };
-    NewGame.prototype.__moveUp = function (tile) {
-        if (!tile || tile.position.y === 0) return;
 
-        var newPos = {
-                x: tile.position.x,
-                y: tile.position.y
-            },
-            reward = 0;
-
-        do {
-            newPos.y -= 1;
-        } while (this.tileList[newPos.x][newPos.y] === undefined && newPos.y > 0)
-
-        if (this.tileList[newPos.x][newPos.y] === undefined) {
-            this.tileList[newPos.x][newPos.y] = tile;
-        } else if (!this.tileList[newPos.x][newPos.y].isJoined && this.tileList[newPos.x][newPos.y].value === tile.value) {
-            reward = this.moveAndJoin(tile, newPos)
-        } else if (this.tileList[newPos.x][newPos.y+1] === undefined) {
-            this.tileList[newPos.x][++newPos.y] = tile;
-        } else {
-            return;
-        }
-
-        this.tileList[tile.position.x][tile.position.y] = undefined;
-        tile.move(newPos);
-
-        return reward;
-    };
-    NewGame.prototype.__moveDown = function (tile) {
-        if (!tile || tile.position.y === 3) return;
-
-        var newPos = {
-                x: tile.position.x,
-                y: tile.position.y
-            },
-            reward = 0;
-
-        do {
-            newPos.y += 1;
-        } while (this.tileList[newPos.x][newPos.y] === undefined && newPos.y < 3);
-
-        if (this.tileList[newPos.x][newPos.y] === undefined) {
-            this.tileList[newPos.x][newPos.y] = tile;
-        } else if (!this.tileList[newPos.x][newPos.y].isJoined && this.tileList[newPos.x][newPos.y].value === tile.value) {
-            reward = this.moveAndJoin(tile, newPos)
-        } else if (this.tileList[newPos.x][newPos.y-1] === undefined) {
-            this.tileList[newPos.x][--newPos.y] = tile;
-        } else {
-            return;
-        }
-
-        this.tileList[tile.position.x][tile.position.y] = undefined;
-        tile.move(newPos);
-
-        return reward;
     };
     NewGame.prototype.moveTiles = function (direction) {
         var score = 0;
@@ -192,21 +119,21 @@ var Game = (function () {
             for (var row = 0; row < 4; row++) {
                 switch (direction) {
                     case 'left':
-                        score = this.__moveLeft(this.tileList[column][row]);
+                        score = this.__moveTile(this.tileList[column][row], -1, 0);
                         break;
                     case 'right':
-                        score = this.__moveRight(this.tileList[3 - column][row]);
+                        score = this.__moveTile(this.tileList[3 - column][row], 1, 0);
                         break;
                     case 'up':
-                        score = this.__moveUp(this.tileList[column][row]);
+                        score = this.__moveTile(this.tileList[column][row], 0, -1);
                         break;
                     case 'down':
-                        score = this.__moveDown(this.tileList[column][3 - row]);
+                        score = this.__moveTile(this.tileList[column][3 - row], 0, 1);
                         break;
                     default: return;
                 }
 
-                if (!isNaN(score)) {
+                if (score !== -1) {
                     gameScore += score;
                     isMoved = true;
                 }
@@ -214,7 +141,7 @@ var Game = (function () {
         }
 
         if (isMoved) {
-            this.randomTile();
+            this.__randomTile();
             if (this.checkGameOver()) gameover.style.zIndex = '100';
         }
     };
@@ -250,12 +177,12 @@ var Game = (function () {
         var self = this;
         this.tileList.filter(Boolean).forEach(function(column) {
             column.filter(Boolean).forEach(function (tile) {
-                self.removeTile(tile);
+                self.__removeTile(tile);
             })
         });
         gameover.style.zIndex = '-1';
         gameScore = 0;
-        this.randomTile();
+        this.__randomTile();
         this.render();
     };
 

@@ -5,6 +5,7 @@ function Tile(options) {
         x: options.position.x,
         y: options.position.y
     }
+    this.isJoined = false;
 }
 Tile.prototype.move = function (newPosition) {
     this.position.x = newPosition.x;
@@ -15,6 +16,7 @@ Tile.prototype.render = function () {
         left = this.position.x * 100
     this.element.style.cssText = 'top: ' + top + 'px; left: ' + left + 'px;';
     this.element.className = 'fade thing t' + this.value;
+    this.isJoined = false;
     return this.element;
 }
 
@@ -24,6 +26,7 @@ const Game = (() => {
         NewGame
 
     var playfield = document.getElementById('playfield'),
+        gameover = document.getElementById('gameover'),
         currentScoreEl = document.getElementById('currentscore'),
         bestScoreEl = document.getElementById('bestscore');
 
@@ -63,6 +66,7 @@ const Game = (() => {
 
     NewGame.prototype.moveAndJoin = function (tile, position) {
         tile.value *= 2;
+        tile.isJoined = true;
         this.removeTail(this.tailList[position.x][position.y]);
         this.tailList[position.x][position.y] = tile;
         return tile.value;
@@ -83,7 +87,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x+1][newPos.y] === undefined) {
             this.tailList[++newPos.x][newPos.y] = tile;
@@ -111,7 +115,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x-1][newPos.y] === undefined) {
             this.tailList[--newPos.x][newPos.y] = tile;
@@ -139,7 +143,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x][newPos.y+1] === undefined) {
             this.tailList[newPos.x][++newPos.y] = tile;
@@ -167,7 +171,7 @@ const Game = (() => {
 
         if (this.tailList[newPos.x][newPos.y] === undefined) {
             this.tailList[newPos.x][newPos.y] = tile;
-        } else if (this.tailList[newPos.x][newPos.y].value === tile.value) {
+        } else if (this.tailList[newPos.x][newPos.y].value === tile.value && !this.tailList[newPos.x][newPos.y].isJoined) {
             reward = this.moveAndJoin(tile, newPos)
         } else if (this.tailList[newPos.x][newPos.y-1] === undefined) {
             this.tailList[newPos.x][--newPos.y] = tile;
@@ -191,13 +195,13 @@ const Game = (() => {
                         score = this.__moveLeft(this.tailList[column][row]);
                         break;
                     case 'right':
-                        score = this.__moveRight(this.tailList[column][row]);
+                        score = this.__moveRight(this.tailList[3 - column][row]);
                         break;
                     case 'up':
                         score = this.__moveUp(this.tailList[column][row]);
                         break;
                     case 'down':
-                        score = this.__moveDown(this.tailList[column][row]);
+                        score = this.__moveDown(this.tailList[column][3 - row]);
                         break;
                     default: return;
                 }
@@ -209,8 +213,37 @@ const Game = (() => {
             }
         }
 
-        if (isMoved) this.randomTail();
+        if (isMoved) {
+            this.randomTail();
+            if (this.checkGameOver()) gameover.style.zIndex = '100';
+        }
+    }
 
+    NewGame.prototype.checkGameOver = function () {
+        var isGameOver = false;
+        for (var column = 0; column < 4; column++) {
+            for (var row = 0; row < 4; row++) {
+
+                var curentTile = this.tailList[column][row],
+                    rightTile = column < 3 ? this.tailList[column+1][row] : undefined,
+                    bottomTile = row < 3 ? this.tailList[column][row+1] : undefined;
+
+                if (curentTile === undefined) {
+                    return false;
+                }
+
+                if (bottomTile && curentTile.value === bottomTile.value) {
+                    return false;
+                }
+
+                if (rightTile && curentTile.value === rightTile.value) {
+                    return false;
+                }
+
+                isGameOver = true;
+            }
+        }
+        return isGameOver;
     }
 
     NewGame.prototype.reset = function () {
@@ -220,7 +253,7 @@ const Game = (() => {
                 self.removeTail(tile);
             })
         })
-
+        gameover.style.zIndex = '-1';
         gameScore = 0;
         this.randomTail();
         this.render();
@@ -231,9 +264,7 @@ const Game = (() => {
         currentScoreEl.textContent = gameScore;
         bestScoreEl.textContent = bestScore;
 
-        console.log(this.tailList);
         this.tailList.filter(Boolean).forEach(function(column) {
-            console.log(column);
             column.filter(Boolean).forEach(function (tile) {
                 tile.render()
             })

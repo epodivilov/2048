@@ -68,6 +68,21 @@ div.fade {
     height: 400px;
     background: white;
 }
+#gameover {
+    position: absolute;
+    z-index: -1;
+    top: 100px;
+    left: 100px;
+    width: 400px;
+    height: 400px;
+    background: rgba(0,0,0,0.7);
+}
+#gameover > p {
+    color: white;
+    font: 48px/96px Arial;
+    text-align: center;
+    margin-top: 140px;
+}
 .back{
     position: absolute;
     width: 100px;

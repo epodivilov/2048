@@ -21,7 +21,7 @@ Tile.prototype.render = function () {
 }
 
 const Game = (() => {
-    var bestScore = 0,
+    var bestScore = localStorage.getItem('bestScore') || 0,
         gameScore = 0,
         NewGame
 
@@ -263,6 +263,7 @@ const Game = (() => {
         bestScore = gameScore > bestScore ? gameScore : bestScore;
         currentScoreEl.textContent = gameScore;
         bestScoreEl.textContent = bestScore;
+        localStorage.setItem('bestScore', bestScore);
 
         this.tailList.filter(Boolean).forEach(function(column) {
             column.filter(Boolean).forEach(function (tile) {

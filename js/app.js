@@ -12,8 +12,8 @@ Tile.prototype.move = function (newPosition) {
     this.position.y = newPosition.y;
 };
 Tile.prototype.render = function () {
-    var top = this.position.y * 100,
-        left = this.position.x * 100;
+    var top = this.position.y * 100 + this.position.y * 5,
+        left = this.position.x * 100 + this.position.x * 5;
     this.element.style.cssText = 'top: ' + top + 'px; left: ' + left + 'px;';
     this.element.className = 'fade thing t' + this.value;
     this.isJoined = false;

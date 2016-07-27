@@ -16,7 +16,7 @@
 .topbar {
     display: flex;
     justify-content: space-around;
-    margin-left: 100px;
+    margin: 50px auto;
     width: 400px;
 }
 
@@ -61,21 +61,21 @@ div.fade {
  }
 
 #playfield{
-    position: absolute;
-    top: 100px;
-    left: 100px;
-    width: 400px;
-    height: 400px;
-    background: white;
+    position: relative;
+    margin: 25px auto;
+    width: 415px;
+    height: 415px;
+    border: 10px solid #595959;
+    background: #595959;
+    border-radius: 10px;
 }
 #gameover {
     position: absolute;
     z-index: -1;
-    top: 100px;
-    left: 100px;
-    width: 400px;
-    height: 400px;
+    width: 100%;
+    height: 100%;
     background: rgba(0,0,0,0.7);
+    border-radius: 10px;
 }
 #gameover > p {
     color: white;
@@ -87,7 +87,8 @@ div.fade {
     position: absolute;
     width: 100px;
     height: 100px;
-    background: gray;
+    background: #a4a4a4;
+    border-radius: 10px;
 }
 .back:nth-child(1) {
     border-top-left-radius: 10px;
@@ -192,9 +193,6 @@ div.fade {
         width: 400px;
     }
     #playfield{
-        left: 25px;
-    }
-    #gameover {
         left: 25px;
     }
 }

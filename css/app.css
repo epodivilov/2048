@@ -15,6 +15,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
+    touch-action: none;
 }
 
 .topbar {
@@ -192,17 +193,5 @@ div.fade {
 }
 .thing.t2048:after{
     content: '2048'
-}
-
-@media screen and (max-device-width: 360px) {
-    .topbar {
-        display: flex;
-        justify-content: space-around;
-        margin-left: 25px;
-        width: 400px;
-    }
-    #playfield{
-        left: 25px;
-    }
 }
 

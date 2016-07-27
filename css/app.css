@@ -23,14 +23,27 @@ body {
     width: 425px;
     clear: both;
     overflow: hidden;
+    color: #707070;
 }
 .annotation > h1 {
     float: left;
     margin: 0;
+    font-size: 50px;
+    font-weight: bold;
 }
 .annotation > p {
     float: right;
     margin: 0;
+}
+a {
+    text-decoration: none;
+}
+a:link,
+a:visited {
+    color: #000000;
+}
+a:hover {
+    color: #a1a1a1;
 }
 
 

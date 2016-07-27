@@ -18,10 +18,26 @@ body {
     touch-action: none;
 }
 
+.annotation {
+    margin: 25px auto;
+    width: 425px;
+    clear: both;
+    overflow: hidden;
+}
+.annotation > h1 {
+    float: left;
+    margin: 0;
+}
+.annotation > p {
+    float: right;
+    margin: 0;
+}
+
+
 .topbar {
     display: flex;
     justify-content: flex-start;
-    margin: 50px auto 0;
+    margin: 25px auto 0;
     width: 425px;
 }
 

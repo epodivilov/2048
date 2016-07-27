@@ -70,13 +70,13 @@ var Game = (function () {
         this.tileList[position.x][position.y] = tile;
         return tile.value;
     };
+    function isCoordinateInRange(coordinate, offset) {
+        return (offset < 0 && coordinate === 0) || (offset > 0 && coordinate === 3)
+    }
     NewGame.prototype.__moveTile = function (tile, dx, dy) {
         if (!tile) return -1;
-        if (dx < 0 && tile.position.x === 0) return -1;
-        if (dx > 0 && tile.position.x === 3) return -1;
-        if (dy < 0 && tile.position.y === 0) return -1;
-        if (dy > 0 && tile.position.y === 3) return -1;
-
+        if (isCoordinateInRange(tile.position.x, dx)) return -1;
+        if (isCoordinateInRange(tile.position.y, dy)) return -1;
 
         var newPos = {
                 x: tile.position.x,
@@ -85,10 +85,9 @@ var Game = (function () {
             reward = 0;
 
         do {
-            if (dx < 0 && newPos.x === 0) break;
-            if (dx > 0 && newPos.x === 3) break;
-            if (dy < 0 && newPos.y === 0) break;
-            if (dy > 0 && newPos.y === 3) break;
+            if (isCoordinateInRange(newPos.x, dx)) break;
+            if (isCoordinateInRange(newPos.y, dy)) break;
+
             newPos.x = newPos.x + dx;
             newPos.y = newPos.y + dy;
         } while (this.tileList[newPos.x][newPos.y] === undefined);

@@ -38,6 +38,10 @@ body {
     color: white;
     margin-right: 5px;
 }
+.topbar > div > span {
+    display: block;
+}
+
 
 .topbar > button {
     margin-left: auto;

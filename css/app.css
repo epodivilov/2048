@@ -13,37 +13,46 @@
     user-drag: none;
 }
 
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
 .topbar {
     display: flex;
-    justify-content: space-around;
-    margin: 50px auto;
-    width: 400px;
+    justify-content: flex-start;
+    margin: 50px auto 0;
+    width: 425px;
 }
 
 .topbar > div {
     display: inline-block;
-    width: 50px;
-    height: 50px;
-    line-height: 25px;
+    width: 60px;
+    height: 40px;
+    line-height: 20px;
     text-align: center;
-    border: 1px solid cornflowerblue;
-    border-radius: 10px;
     padding: 5px;
+    border: 5px solid #707070;
+    background: #a4a4a4;
+    border-radius: 10px;
+    color: white;
+    margin-right: 5px;
 }
 
 .topbar > button {
-    border-radius: 50%;
-    width: 60px;
+    margin-left: auto;
+    border: 5px solid #707070;
+    background: #a4a4a4;
+    border-radius: 10px;
+    width: 110px;
     height: 60px;
-    background-color: white;
-    border: 1px solid cornflowerblue;
+    color: white;
+    font-weight: bold;
 }
 .topbar > button:focus {
     outline: none;
 }
 .topbar > button:active {
-    background-color: cornflowerblue;
-    color: white;
+    background-color: #707070;
 }
 
 
@@ -65,8 +74,8 @@ div.fade {
     margin: 25px auto;
     width: 415px;
     height: 415px;
-    border: 10px solid #595959;
-    background: #595959;
+    border: 10px solid #707070;
+    background: #707070;
     border-radius: 10px;
 }
 #gameover {
@@ -79,7 +88,7 @@ div.fade {
 }
 #gameover > p {
     color: white;
-    font: 48px/96px Arial;
+    font: 48px/96px 'Roboto', sans-serif;
     text-align: center;
     margin-top: 140px;
 }
@@ -110,7 +119,7 @@ div.fade {
     background: transparent;
     color: black;
     text-align: center;
-    font: 48px/96px Arial;
+    font: 48px/96px 'Roboto', sans-serif;
     transition-property: left, top;
     transition-duration: 0.1s;
     transition-timing-function: ease-out;

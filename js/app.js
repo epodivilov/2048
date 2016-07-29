@@ -202,10 +202,10 @@ var Game = (function () {
 })();
 
 function Mouse() {
-    this.downX = 0;
-    this.downY = 0;
-    this.upX = 0;
-    this.upY = 0;
+    this.downX = undefined;
+    this.downY = undefined;
+    this.upX = undefined;
+    this.upY = undefined;
 }
 Mouse.prototype.getDirection = function () {
     var direction = '';
@@ -233,6 +233,12 @@ Mouse.prototype.onMouseUp = function (event) {
     this.upX = event.pageX;
     this.upY = event.pageY;
 };
+Mouse.prototype.reset = function () {
+    this.downX = undefined;
+    this.downY = undefined;
+    this.upX = undefined;
+    this.upY = undefined;
+}
 
 
 window.onload = function () {
@@ -269,6 +275,7 @@ window.onload = function () {
         mouse.onMouseUp(e);
         game.moveTiles(mouse.getDirection());
         game.render();
+        mouse.reset();
     });
 
     playfield.addEventListener('touchend', function (e) {

@@ -15,7 +15,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    touch-action: none;
+
 }
 
 .annotation {
@@ -111,6 +111,7 @@ div.fade {
     border: 10px solid #707070;
     background: #707070;
     border-radius: 10px;
+    touch-action: none;
 }
 #gameover {
     position: absolute;

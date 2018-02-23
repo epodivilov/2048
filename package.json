@@ -6,7 +6,8 @@
   "scripts": {
     "start": "parcel source/index.html",
     "build": "parcel build source/index.html --public-url ./",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "lint": "eslint --fix source/**/*.js && stylelint --fix source/**/*.css"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,11 @@
   },
   "homepage": "https://github.com/epodivilov/2048#readme",
   "devDependencies": {
+    "eslint": "4.18.1",
+    "eslint-config-recommended": "2.0.0",
     "gh-pages": "1.1.0",
-    "parcel-bundler": "1.6.2"
+    "parcel-bundler": "1.6.2",
+    "stylelint": "9.1.1",
+    "stylelint-config-recommended": "2.1.0"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "2048",
+  "version": "1.0.0",
+  "description": "Простая реализация игры 2048 на чистом JS",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel source/index.html",
+    "build": "parcel build source/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/epodivilov/2048.git"
+  },
+  "keywords": [],
+  "author": "Evgeniy Podivilov <evgeniy.podivilov@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/epodivilov/2048/issues"
+  },
+  "homepage": "https://github.com/epodivilov/2048#readme",
+  "devDependencies": {
+    "parcel-bundler": "1.6.2"
+  }
+}

@@ -6,6 +6,15 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.mode {
+  display: none;
+  color: red;
+}
+
+.offline {
+  display: block;
+}
+
 .annotation {
   margin: 25px auto;
   width: 425px;

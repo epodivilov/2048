@@ -285,4 +285,39 @@ window.onload = function () {
   resetBtn.addEventListener('click', function () {
     game.reset();
   });
+
+  const updateOnlineStatus = () => {
+    const modeLabel = document.querySelector('.mode');
+
+    if (navigator.onLine === false) {
+      modeLabel.classList.add('offline');
+    } else {
+      modeLabel.classList.remove('offline');
+    }
+  };
+
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+
+  if ('serviceWorker' in navigator) {
+    const scripts = Array.from(document.querySelectorAll('script')).map(i => i.src.replace(location.origin, ''));
+    const styles = Array.from(document.querySelectorAll('link')).map(i => i.href.replace(location.origin, '')).filter(i => i.match('.css'));
+
+    const parameters = [
+      '/index.html',
+      ...scripts,
+      ...styles
+    ];
+
+    navigator.serviceWorker
+      .register('./appCache.js')
+      .then((r) => {
+        console.log('Service Worker Registered'); // eslint-disable-line
+
+        if (r.installing !== null) {
+          r.installing.postMessage({ cacheUrls: parameters });
+        }
+      });
+  }
 };

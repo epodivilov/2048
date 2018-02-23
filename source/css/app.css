@@ -1,4 +1,4 @@
-*{
+* {
     -moz-user-select: none;
     -khtml-user-select: none;
     -ms-user-select: none;
@@ -10,7 +10,6 @@
     -o-user-drag: none;
     -khtml-user-drag: none;
     -ms-user-drag: none;
-    user-drag: none;
 }
 
 body {

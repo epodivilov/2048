@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel source/index.html",
+    "prebuild": "rimraf dist",
     "build": "parcel build source/index.html --public-url ./",
     "deploy": "npm run build && gh-pages -d dist",
     "lint": "eslint --fix source/**/*.js && stylelint --fix source/**/*.css"
@@ -26,6 +27,7 @@
     "eslint-config-recommended": "2.0.0",
     "gh-pages": "1.1.0",
     "parcel-bundler": "1.6.2",
+    "rimraf": "2.6.2",
     "stylelint": "9.1.1",
     "stylelint-config-standard": "18.1.0"
   }

@@ -240,13 +240,13 @@ Mouse.prototype.reset = function () {
     this.upY = undefined;
 }
 
-
 window.onload = function () {
-    var resetBtn = document.getElementById('reset');
-    var playfield = document.getElementById('playfield');
+    console.log('Start');
+    const resetBtn = document.getElementById('reset');
+    const playfield = document.getElementById('playfield');
 
-    var game = new Game(),
-        mouse = new Mouse();
+    const game = new Game();
+    const mouse = new Mouse();
 
     game.reset();
 

@@ -1,4 +1,4 @@
-const VERSION = 0.3;
+const VERSION = 0.31;
 const CACHE_NAME = `swCache_v_${VERSION}`;
 
 function fromCache (request) {

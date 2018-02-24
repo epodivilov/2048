@@ -1,10 +1,10 @@
-const VERSION = 0.32;
+const VERSION = 0.33;
 const CACHE_NAME = `swCache_v_${VERSION}`;
 
 function fromCache (request) {
   return caches.open(CACHE_NAME).then((cache) =>
     cache.match(request).then((matching) =>
-      matching || Promise.reject('no-match')
+      matching || fetch(event.request)
     ));
 }
 

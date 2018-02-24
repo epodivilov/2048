@@ -1,9 +1,0 @@
-{
-  "name": "Game 2048",
-  "short_name": "2048",
-  "start_url": "/?homescreen=1",
-  "scope": "/",
-  "display": "standalone",
-  "background_color": "#2196F3",
-  "theme_color": "#2196F3"
-}

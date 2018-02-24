@@ -1,3 +1,5 @@
+import { WorkerManager } from './utils';
+
 function Tile (options) {
   this.element = document.createElement('div');
   this.value = options.value;
@@ -286,38 +288,30 @@ window.onload = function () {
     game.reset();
   });
 
-  const updateOnlineStatus = () => {
+  const updateStatus = ({ status }) => {
     const modeLabel = document.querySelector('.mode');
 
-    if (navigator.onLine === false) {
-      modeLabel.classList.add('offline');
-    } else {
-      modeLabel.classList.remove('offline');
+    if (!status) {
+      return modeLabel.classList.add('offline');
     }
-  };
 
-  window.addEventListener('online', updateOnlineStatus);
-  window.addEventListener('offline', updateOnlineStatus);
-  updateOnlineStatus();
+    modeLabel.classList.remove('offline');
+  };
 
   if ('serviceWorker' in navigator) {
     const scripts = Array.from(document.querySelectorAll('script')).map(i => i.src.replace(location.origin, ''));
-    const styles = Array.from(document.querySelectorAll('link')).map(i => i.href.replace(location.origin, '')).filter(i => i.match('.css'));
+    const styles = Array.from(document.querySelectorAll('link')).map(i => i.href.replace(location.origin, '')).filter(i => i.match(/.css$/));
 
-    const parameters = [
-      '/index.html',
-      ...scripts,
-      ...styles
-    ];
+    const swManager = new WorkerManager('./swCache.js', {
+      cacheUrls: [
+        './',
+        './index.html',
+        ...scripts,
+        ...styles
+      ]
+    });
 
-    navigator.serviceWorker
-      .register('./appCache.js')
-      .then((r) => {
-        console.log('Service Worker Registered'); // eslint-disable-line
-
-        if (r.installing !== null) {
-          r.installing.postMessage({ cacheUrls: parameters });
-        }
-      });
+    swManager.on('status', updateStatus);
+    swManager.register();
   }
 };
